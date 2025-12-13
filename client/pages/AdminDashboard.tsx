@@ -26,29 +26,72 @@ export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // useEffect(() => {
+  //   // Check if user is authenticated
+  //   const token = localStorage.getItem('adminToken');
+  //   if (!token) {
+  //     navigate('/admin/login');
+  //     return;
+  //   }
+
+  //   // Fetch dashboard data
+  //   const fetchData = async () => {
+  //     try {
+  //       const result = await getSummary();
+  //       setData(result);
+  //     } catch (error) {
+  //       const errorMsg = error instanceof Error ? error.message : 'Failed to load dashboard';
+  //       showErrorToast(errorMsg);
+  //       console.error('Dashboard error:', error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [navigate]);
+
   useEffect(() => {
-    // Check if user is authenticated
+    // --- Mock token logic for prototype ---
     const token = localStorage.getItem('adminToken');
+    // Skip redirect — always allow access in prototype
     if (!token) {
-      navigate('/admin/login');
-      return;
+      console.log('⚠️ No admin token found — using mock data for prototype');
     }
 
-    // Fetch dashboard data
-    const fetchData = async () => {
+    // --- Mock data instead of API ---
+    const fetchMockData = async () => {
+      setIsLoading(true);
+
       try {
-        const result = await getSummary();
-        setData(result);
+        // Simulate small delay
+        await new Promise((res) => setTimeout(res, 800));
+
+        const mockData: DashboardData = {
+          total_participants: 10,
+          meals_day1: 9,
+          meals_day2: 8,
+          category_breakdown: {
+            presenters: 3,
+            attendees: 7,
+          },
+          meals_by_type: {
+            breakfast: 9,
+            lunch: 10,
+            hitea: 8,
+          },
+        };
+
+        setData(mockData);
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Failed to load dashboard';
-        showErrorToast(errorMsg);
-        console.error('Dashboard error:', error);
+        console.error('Error loading mock data:', error);
+        showErrorToast('Failed to load mock data');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
+    fetchMockData();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -246,3 +289,169 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+
+
+
+// src/pages/AdminDashboard.tsx
+// src/pages/AdminDashboard.tsx
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+
+// import { 
+//   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend 
+// } from "recharts";
+
+// import Lottie from "lottie-react";
+// import dashboardAnim from "@/assets/Rolling Check Mark.json";  // existing animation
+// import Skeleton from "@/components/Skeleton"; // we created this component
+
+// export default function AdminDashboard() {
+//   const [loading, setLoading] = useState(true);
+//   const [metrics, setMetrics] = useState<any>(null);
+//   const [error, setError] = useState<string | null>(null);
+
+//   const fetchMetrics = async () => {
+//     setLoading(true);
+//     try {
+//       const res = await axios.get("http://127.0.0.1:4000/api/admin/dashboard");
+//       if (!res.data.success) {
+//         setError(res.data.message);
+//         setMetrics(null);
+//       } else {
+//         setMetrics(res.data.data);
+//       }
+//     } catch (err: any) {
+//       setError("Network error");
+//       setMetrics(null);
+//     }
+//     setLoading(false);
+//   };
+
+//   useEffect(() => {
+//     fetchMetrics();
+//   }, []);
+
+//   if (loading) {
+//     return (
+//       <div className="p-6">
+//         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+//           <Skeleton height="80px" />
+//           <Skeleton height="80px" />
+//           <Skeleton height="80px" />
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="p-6">
+//         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+//         <p className="text-red-600 mt-4">{error}</p>
+//         <button 
+//           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded" 
+//           onClick={fetchMetrics}>
+//           Retry
+//         </button>
+//       </div>
+//     );
+//   }
+
+//   const chartData = [
+//     { name: "Breakfast", count: metrics.meals.breakfast },
+//     { name: "Lunch", count: metrics.meals.lunch },
+//     { name: "Hi-Tea", count: metrics.meals.hi_tea },
+//   ];
+
+//   return (
+//     <div className="p-6">
+
+//       <div className="flex items-center justify-between">
+//         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+//         <div className="w-24">
+//           <Lottie animationData={dashboardAnim} loop />
+//         </div>
+//       </div>
+
+//       {/* Summary Cards */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+
+//         <div className="bg-white p-4 rounded-xl shadow">
+//           <p className="text-gray-500 text-sm">Total Participants</p>
+//           <h2 className="text-2xl font-bold">{metrics.total_participants}</h2>
+//         </div>
+
+//         <div className="bg-white p-4 rounded-xl shadow">
+//           <p className="text-gray-500 text-sm">QR Assigned</p>
+//           <h2 className="text-2xl font-bold">{metrics.total_qr_assigned}</h2>
+//         </div>
+
+//         <div className="bg-white p-4 rounded-xl shadow">
+//           <p className="text-gray-500 text-sm">Meal Updates</p>
+//           <h2 className="text-2xl font-bold">{metrics.meals.total_meal_updates}</h2>
+//         </div>
+
+//         <div className="bg-white p-4 rounded-xl shadow">
+//           <p className="text-gray-500 text-sm">Duplicate Attempts</p>
+//           <h2 className="text-2xl font-bold">{metrics.duplicate_attempts}</h2>
+//         </div>
+
+//       </div>
+
+//       {/* Chart + Logs */}
+//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+
+//         <div className="bg-white p-4 rounded-xl shadow">
+//           <h3 className="font-semibold mb-3">Meal Breakdown</h3>
+
+//           <ResponsiveContainer width="100%" height={240}>
+//             <BarChart data={chartData}>
+//               <XAxis dataKey="name" />
+//               <YAxis allowDecimals={false} />
+//               <Tooltip />
+//               <Legend />
+//               <Bar dataKey="count" fill="#4f46e5" />
+//             </BarChart>
+//           </ResponsiveContainer>
+//         </div>
+
+//         <div className="bg-white p-4 rounded-xl shadow">
+//           <h3 className="font-semibold mb-3">Latest Scan Logs</h3>
+
+//           {metrics.latest_scan_logs.length === 0 ? (
+//             <p className="text-sm text-gray-500">No logs</p>
+//           ) : (
+//             <div className="overflow-auto">
+//               <table className="text-sm w-full">
+//                 <thead>
+//                   <tr className="text-left text-gray-500 border-b">
+//                     <th className="py-2">Time</th>
+//                     <th>Email</th>
+//                     <th>Meal</th>
+//                     <th>QR</th>
+//                   </tr>
+//                 </thead>
+
+//                 <tbody>
+//                   {metrics.latest_scan_logs.map((log: any) => (
+//                     <tr key={log.id} className="border-b">
+//                       <td className="py-1">
+//                         {new Date(log.created_at).toLocaleString()}
+//                       </td>
+//                       <td>{log.email}</td>
+//                       <td>{log.meal_type}</td>
+//                       <td>{log.qr_hash}</td>
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </table>
+//             </div>
+//           )}
+//         </div>
+
+//       </div>
+//     </div>
+//   );
+// }

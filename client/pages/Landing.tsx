@@ -1,128 +1,178 @@
-import { Link } from 'react-router-dom';
-import { QrCode, UserPlus, BarChart3, Zap } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Moon, Sun, Home, Info, ImageIcon, Users, Calendar, Mail, MapPin } from "lucide-react";
+import { motion } from "framer-motion";
+import LandingHero from "@/components/LandingHero";
 
-export default function Landing() {
+// If you prefer Lottie animations, import Lottie and provide animation JSONs in /src/assets
+// import Lottie from 'lottie-react';
+// import heroAnim from '@/assets/hero-animation.json';
+
+// Landing page component (single-file, production-ready layout)
+export default function LandingPage() {
+  // theme: 'light' | 'dark' | 'system'
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    try {
+      const saved = localStorage.getItem("site-theme");
+      if (saved === "dark") return "dark";
+    } catch (e) {}
+    // default to light
+    return "light";
+  });
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    try { localStorage.setItem("site-theme", theme); } catch (e) {}
+  }, [theme]);
+
+  // countdown target (conference dates: 19 Dec 2025 start)
+  const target = new Date("2025-12-19T09:00:00+05:30");
+  const [left, setLeft] = useState(getLeft());
+
+  function getLeft() {
+    const now = new Date();
+    const diff = Math.max(0, target.getTime() - now.getTime());
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    return { days, hours, minutes, seconds };
+  }
+
+  useEffect(() => {
+    const t = setInterval(() => setLeft(getLeft()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  // small helper components
+  const StatCard = ({ title, value, subtitle, accent = "bg-indigo-500" } : any) => (
+    <div className="bg-white/70 dark:bg-slate-800/80 backdrop-blur rounded-2xl p-5 shadow-md border border-gray-100 dark:border-slate-700">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-2xl font-semibold">{value}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{title}</div>
+        </div>
+        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${accent} text-white`}> 
+          <Users size={20} />
+        </div>
+      </div>
+      {subtitle && <div className="text-xs text-gray-500 dark:text-gray-400 mt-3">{subtitle}</div>}
+    </div>
+  );
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="max-w-3xl mx-auto text-center space-y-8 glassmorphism p-8 md:p-12">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-lg">
-              A
-            </div>
-          </div>
-
-          {/* Title */}
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-900 transition-colors">
+      {/* <header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold">G</div>
           <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-              ICIISD
-            </h1>
-            <p className="text-xl text-gray-600">
-              AI4SG Conference Management System
-            </p>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-4 max-w-2xl mx-auto">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Welcome to the <span className="font-semibold">2024 AI4SG Conference</span>. 
-              This year's conference brings together leading researchers and practitioners in AI for social good.
-            </p>
-            <p className="text-base text-gray-600">
-              <span className="font-semibold">Conference Dates:</span> December 19-20, 2024
-            </p>
-            <p className="text-sm text-gray-500">
-              Experience seamless registration, QR-based ID verification, and integrated meal tracking across both days.
-            </p>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 glass-button"
-            >
-              <UserPlus className="w-5 h-5" />
-              On-Spot Register
-            </Link>
-            <Link
-              to="/food-scan"
-              className="inline-flex items-center justify-center gap-2 glass-button-outline"
-            >
-              <QrCode className="w-5 h-5" />
-              Food Scan
-            </Link>
-            <Link
-              to="/admin/login"
-              className="inline-flex items-center justify-center gap-2 bg-white/40 backdrop-blur-sm text-gray-900 font-semibold py-3 px-8 rounded-lg border-2 border-white/60 hover:bg-white/50 transition-all"
-            >
-              <BarChart3 className="w-5 h-5" />
-              Admin Login
-            </Link>
+            <div className="text-lg font-bold">ICAIISD 2025</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400">Government College of Engineering, Amravati</div>
           </div>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="px-4 py-16 md:py-20 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Key Features
-          </h2>
+        <nav className="flex items-center gap-4">
+          <a className="text-sm hover:underline" href="#home">Home</a>
+          <a className="text-sm hover:underline" href="#about">About</a>
+          <a className="text-sm hover:underline" href="#tracks">Tracks</a>
+          <a className="text-sm hover:underline" href="#committee">Committees</a>
+          <a className="text-sm hover:underline" href="#contact">Contact</a>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <div className="glass-card p-6 flex flex-col items-center text-center space-y-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400/50 to-blue-600/50 backdrop-blur rounded-xl flex items-center justify-center text-blue-600">
-                <UserPlus className="w-6 h-6" />
+          <button
+            onClick={() => setTheme(t => t === "dark" ? "light" : "dark")}
+            className="p-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800"
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+        </nav>
+      </header> */}
+
+      <main className="max-w-7xl mx-auto px-6">
+        {/* HERO */}
+        <LandingHero />
+
+        {/* About section */}
+        <section id="about" className="py-12">
+          <div className="max-w-3xl">
+            <h3 className="text-2xl font-semibold">About the Conference</h3>
+            <p className="mt-3 text-gray-700 dark:text-gray-300">Welcome to ICAIISD 2025 — a platform for researchers, industry professionals, and students to share innovations in AI for societal development. Join workshops, sessions, and networking events.</p>
+          </div>
+        </section>
+
+        {/* Tracks grid */}
+        <section id="tracks" className="py-12">
+          <h3 className="text-2xl font-semibold">Conference Tracks</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {[
+              'AI in Healthcare and Human Development',
+              'AI in Education',
+              'AI in Agriculture',
+              'AI in Smart Cities',
+              'AI in Robotics',
+              'AI in FinTech'
+            ].map((t) => (
+              <div key={t} className="p-4 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-gray-100 dark:border-slate-700 shadow-sm">
+                <div className="font-semibold">{t}</div>
+                <div className="text-xs text-gray-500 mt-2">Call for papers & sessions</div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                On-Spot Registration
-              </h3>
-              <p className="text-gray-700">
-                Quick and easy registration with instant QR code generation for seamless entry.
-              </p>
+            ))}
+          </div>
+        </section>
+
+        {/* Committees / Partners */}
+        {/* <section id="committee" className="py-12">
+          <h3 className="text-2xl font-semibold">Organizers & Partners</h3>
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="p-4 rounded-lg bg-white/80 dark:bg-slate-800/80 border">Govt College of Engineering</div>
+            <div className="p-4 rounded-lg bg-white/80 dark:bg-slate-800/80 border">Knowledge Partner</div>
+            <div className="p-4 rounded-lg bg-white/80 dark:bg-slate-800/80 border">Publication Partner</div>
+            <div className="p-4 rounded-lg bg-white/80 dark:bg-slate-800/80 border">Tech Partner</div>
+          </div>
+        </section> */}
+
+        {/* Footer / Contact */}
+        <section id="contact" className="py-12 pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div>
+              <div className="text-lg font-semibold">Venue</div>
+              <div className="text-sm text-gray-600 mt-2">Government College of Engineering, Amravati</div>
+              <div className="mt-4 text-sm text-gray-600">VMV Road, Kathora Naka, Amravati, Maharashtra - 444604</div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="glass-card p-6 flex flex-col items-center text-center space-y-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400/50 to-blue-600/50 backdrop-blur rounded-xl flex items-center justify-center text-blue-600">
-                <QrCode className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                QR-Based Check-in
-              </h3>
-              <p className="text-gray-700">
-                Fast mobile scanning for meal tracking across breakfast, lunch, and high tea.
-              </p>
+            <div>
+              <div className="text-lg font-semibold">Important Dates</div>
+              <ul className="mt-2 text-sm text-gray-600">
+                <li>Full Paper Submission — 15 Aug 2025</li>
+                <li>Acceptance — 15 Oct 2025</li>
+                <li>Registration — 5 Nov 2025</li>
+              </ul>
             </div>
 
-            {/* Feature 3 */}
-            <div className="glass-card p-6 flex flex-col items-center text-center space-y-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400/50 to-blue-600/50 backdrop-blur rounded-xl flex items-center justify-center text-blue-600">
-                <Zap className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Real-Time Analytics
-              </h3>
-              <p className="text-gray-700">
-                Admin dashboard with live tracking and comprehensive meal distribution reports.
-              </p>
+            <div>
+              <div className="text-lg font-semibold">Contact</div>
+              <div className="mt-2 text-sm text-gray-600">Email: icaiisd2025@gcoea.ac.in</div>
+              <div className="mt-1 text-sm text-gray-600">Phone: +91 12345 67890</div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="glassmorphism-dark border-t px-4 py-8">
-        <div className="max-w-5xl mx-auto text-center text-gray-700 text-sm">
-          <p>
-            AICMS © 2024 AI4SG Conference. All rights reserved.
-          </p>
-        </div>
-      </footer>
+          <a
+  href="https://www.linkedin.com/in/dakshtitarmare/"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <div className="mt-8 text-center text-sm text-gray-500">
+    © 2025 GCoEA — All rights reserved • Developed by GCoEA IT Branch
+  </div>
+</a>
+
+
+
+        </section>
+      </main>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 // API base URL - adjust as needed for your environment
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5173/api';
@@ -155,3 +155,13 @@ export const adminLogin = async (
 };
 
 export default apiClient;
+
+
+// // src/lib/apiClient.ts
+// import axios from "axios";
+
+// const API_BASE = process.env.REACT_APP_API_URL || "http://127.0.0.1:4000";
+
+// export async function getAdminDashboard() {
+//   return axios.get(`${API_BASE}/api/admin/dashboard`);
+// }
