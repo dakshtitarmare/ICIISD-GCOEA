@@ -10,7 +10,7 @@ import Navbar from "./components/Navbar";
 import Landing from "./pages/Landing";
 // import Register from "./pages/Register";
 // import FoodScan from "./pages/FoodScan";
-import AdminLogin from "./pages/AdminLogin";
+import AdminLogin from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import RegistrationPhone from "./pages/RegistrationPhone";

@@ -21,7 +21,7 @@ export default function CommitteeLogin() {
     console.log(data);
 
     try {
-      const res = await axios.post("http://127.0.0.1:4000/auth/login", data);
+      const res = await axios.post("http://127.0.0.1:4000/api/login", data);
   
       const result = res.data;
   
@@ -41,7 +41,7 @@ export default function CommitteeLogin() {
       // ✔ Redirect based on role
       switch (result.data.role) {
         case "laptop_registration":
-          navigate("/registration-phone/dashboard");
+          navigate("/registration-laptop/dashboard");
           break;
   
         case "phone_registration":
