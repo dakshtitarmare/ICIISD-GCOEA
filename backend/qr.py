@@ -1,7 +1,9 @@
 from flask import Blueprint, request
 from db import get_connection
 from utils import response
+from dotenv import load_dotenv
 
+load_dotenv()
 qr = Blueprint("qr", __name__, url_prefix="/api")
 
 # -----------------------------------------------------------

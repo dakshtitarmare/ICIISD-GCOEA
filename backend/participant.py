@@ -1,7 +1,8 @@
 from flask import Blueprint, request
 from db import get_connection
 from utils import response
-
+from dotenv import load_dotenv
+load_dotenv()
 participant = Blueprint("participant", __name__, url_prefix="/api")
 
 @participant.get("/participant/search")

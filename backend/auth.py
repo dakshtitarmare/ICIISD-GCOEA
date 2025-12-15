@@ -3,7 +3,8 @@ from db import get_connection
 from utils import response
 # from flask_jwt_extended import create_access_token
 from datetime import timedelta
-
+from dotenv import load_dotenv
+load_dotenv()
 auth = Blueprint("auth", __name__, url_prefix="/api")
 
 # JWT secret (set in your config normally)
@@ -22,6 +23,10 @@ def login():
 
     conn = get_connection()
     cur = conn.cursor()
+    conn = get_connection()
+    if conn is None:
+        raise RuntimeError("Database connection failed")
+
     cur.execute("SELECT * FROM members WHERE email=%s", (email,))
     user = cur.fetchone()
     conn.close()
