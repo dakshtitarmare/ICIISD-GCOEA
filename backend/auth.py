@@ -1,9 +1,12 @@
 from flask import Blueprint, request
 from db import get_connection
 from utils import response
-import os
+# from flask_jwt_extended import create_access_token
+from datetime import timedelta
 
 auth = Blueprint("auth", __name__, url_prefix="/api")
+
+# JWT secret (set in your config normally)
 
 @auth.post("/login")
 def login():
@@ -26,11 +29,16 @@ def login():
     if not user:
         return response(False, "Invalid email", None, 401)
 
-    # NOTE: DB stores plain password — comparing directly
     if password != user.get("password"):
         return response(False, "Invalid password", None, 401)
 
-    # Return user info only, no JWT token
+    # # ✅ Create JWT token (expires in 1 day)
+    # access_token = create_access_token(
+    #     identity=user.get("id"),
+    #     expires_delta=timedelta(days=1)
+    # )
+
+    # Return user info + token
     return response(True, "Login successful", {
         "role": user.get("role"),
         "email": user.get("email"),

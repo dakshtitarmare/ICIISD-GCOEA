@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import RegistrationPhone from "./pages/RegistrationPhone";
 import RegistrationLaptop from "./pages/RegistrationLaptop"
 import MealDashboard from "./pages/MealDashboard";
+import AuthGuard from "./components/authGuard";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -33,8 +34,16 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
           <Route path="/registration-phone/dashboard" element={<RegistrationPhone />} />
-          <Route path="/registration-laptop/dashboard" element={<RegistrationLaptop />} />
-          <Route path="/meal-dashboard" element={<MealDashboard />} />
+          // In your dashboard routes
+<Route 
+  path="/registration-laptop/dashboard" 
+  element={
+    <AuthGuard requiredRole="laptop_registration">
+      <RegistrationLaptop />
+    </AuthGuard>
+  } 
+/>          
+          <Route path="/meal/dashboard" element={<MealDashboard />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
