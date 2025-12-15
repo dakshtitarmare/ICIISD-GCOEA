@@ -1,5 +1,6 @@
 annotated-types==0.7.0
 anyio==4.11.0
+appnope==0.1.4
 argon2-cffi==25.1.0
 argon2-cffi-bindings==25.1.0
 arrow==1.4.0
@@ -29,6 +30,7 @@ fastjsonschema==2.21.2
 filelock==3.19.1
 Flask==3.1.2
 flask-cors==6.0.1
+Flask-JWT-Extended==4.7.1
 Flask-Limiter==4.0.0
 fonttools==4.60.1
 fqdn==1.5.1

@@ -1,7 +1,6 @@
 from flask import Blueprint, request
 from db import get_connection
 from utils import response
-from flask_jwt_extended import create_access_token
 import os
 
 auth = Blueprint("auth", __name__, url_prefix="/api")
@@ -27,19 +26,12 @@ def login():
     if not user:
         return response(False, "Invalid email", None, 401)
 
-    # NOTE: you said DB stores plain password — comparing directly
+    # NOTE: DB stores plain password — comparing directly
     if password != user.get("password"):
         return response(False, "Invalid password", None, 401)
 
-    # create token containing an identity string and additional claims for future use
-    identity = str(user.get("id"))
-    token = create_access_token(identity=identity, additional_claims={
-        "email": user.get("email"),
-        "role": user.get("role")
-    })
-
+    # Return user info only, no JWT token
     return response(True, "Login successful", {
-        "token": token,
         "role": user.get("role"),
         "email": user.get("email"),
         "id": user.get("id")

@@ -11,7 +11,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: 'Home', path: '/' },
-    { label: 'Admin', path: '/login' },
+    { label: 'Login', path: '/login' },
   ];
 
   return (

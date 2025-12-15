@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "node_modules/react-hook-form/dist";
+import { useForm } from "react-hook-form";
 import { Lock } from "lucide-react";
 import { showSuccessToast, showErrorToast } from "@/lib/toastUtils";
 import axios from "axios";
@@ -18,9 +18,10 @@ export default function CommitteeLogin() {
 
   const onSubmit = async (data: LoginForm) => {
     setLoginError(null);
-  
+    console.log(data);
+
     try {
-      const res = await axios.post("http://127.0.0.1:4000/api/login", data);
+      const res = await axios.post("http://127.0.0.1:4000/auth/login", data);
   
       const result = res.data;
   
